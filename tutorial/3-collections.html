@@ -22,7 +22,6 @@
 var Comment = Backbone.Model.extend({
   /* This is purposely different from the previous steps.
    * Make sure to do those first (!!!) and then check here for new patterns. */
-
   initialize: function(message, votes) {
     this.set('message', message);
     if (votes) { this.set('votes', votes); }
@@ -57,7 +56,6 @@ var CommentView = Backbone.View.extend({
         '</br>',
       '</div>'
     ].join('');
-
     return this.$el.html(html);
     /* Rendering raw model attributes like this could expose us
      * to XSS attacks. In a real application, make sure to use
@@ -76,7 +74,6 @@ var Comments = Backbone.Collection.extend({
    * http://backbonejs.org/#Collection-model */
   model: Comment
 });
-
 /* The reason we want a collection is to track our models.
  * Let's use this collection to:
  * - display every comment in it
@@ -92,7 +89,6 @@ var CommentsView = Backbone.View.extend({
      * so monitoring a model in a collection is easy! */
     this.collection.on('change:votes', this.render, this);
   },
-
   // Now we must render the collection:
   render: function() {
     var html = [
@@ -105,20 +101,17 @@ var CommentsView = Backbone.View.extend({
         }, 0),
       '</span>'
     ].join('');
-
     this.$el.html(html);
     /* Render each model in the collection as a list item (<li>).
      * Remember, we have the underscore functions: */
     this.$el.find('ul').append(this.collection.map(function(comment) {
-      // YOUR CODE HERE
+      console.log(comment.get('message') + ' ');
+      return comment.get('message') + ' ' + comment.get('votes') + '<br>';
     }));
-
     return this.$el;
   }
 });
-
 // That's it! Let's watch some stats:
-
 /* Create a few new comment models using our Comment class: */
 var commentList = [
   new Comment('Doug!'), // default to 0 votes
@@ -126,15 +119,12 @@ var commentList = [
   new Comment('Doug.', 2),
   new Comment('"Doug".', 3),
   new Comment('Doug?!', 4)];
-
 // Add all of these to a new collection:
 var comments = new Comments(commentList);
-
 // Associate a view to the collection:
 var commentsView = new CommentsView({ collection: comments });
-
 // Append it to the page (uncomment this when you are ready):
-// $('body').append(commentsView.render());
+$('body').append(commentsView.render());
     </script>
   </body>
 </html>

@@ -24,19 +24,26 @@ var Comment = Backbone.Model.extend({
   /* The argument passed to `initialize` is what the model is instantiated with:
    * in `new Comment(message)`, message will be passed to `initialize`. */
   initialize: function(message) {
+    this.set('votes', 0);
+    this.set('message', message);
     /* Set the initial values for `votes` to 0 and `message` to the message.
      * Remember to use setters when working with attributes! */
   },
   votes: function() {
+    return this.get('votes');
     /* Return the votes attribute on this model.
      * Remember to use a getter when working with attributes! */
   },
   upvote: function(){
+    this.set('votes', this.get('votes')+1);
+    // Set the `votes` attribute to the current vote count plus one.
+  },
+  downvote: function(){
+    this.set('votes', this.get('votes')-1);
     // Set the `votes` attribute to the current vote count plus one.
   }
   // Add a downvote function; don't forget the comma above.
 });
-
 /* - Backbone VIEW ------------------------------------------------------------
  * Now that we have a model, we'll want a view to display it.
  * Frequently, backbone views will be the place where you
@@ -46,7 +53,6 @@ var Comment = Backbone.Model.extend({
  * For example, you would re-draw a comment on the page if
  * the comment model changes.  Lets dive into how to make that happen.
  */
-
 // Views are created by extending the Backbone.View, just like models:
 var CommentView = Backbone.View.extend({
   /* Our initialize function defines methods that we want available on
@@ -77,7 +83,6 @@ var CommentView = Backbone.View.extend({
      * until you have a good grasp of the concept.
      */
   },
-
   // Now that we have an event listener calling `render`, we must define it:
   render: function() {
     // As in step2, we define a template:
@@ -92,7 +97,6 @@ var CommentView = Backbone.View.extend({
         '</br>',
       '</div>'
     ].join('');
-
     /* When we defined our own render function, we had to deal with jQuery.
      * Backbone gives us a convenience method to take care of this:
      * every view has a jQuery element associated with it, called `$el`.
@@ -107,7 +111,6 @@ var CommentView = Backbone.View.extend({
      *
      * Rendering now becomes as simple as setting the $el's html: */
     return this.$el.html(html);
-
     /* We're also returning the $el. It's already been modified and updated,
      * but it is not on the page yet.
      * In a couple lines, we will put it onto the page; then we can modify it
@@ -116,16 +119,12 @@ var CommentView = Backbone.View.extend({
      */
   }
 });
-
 // That's about it! Let's take it for a spin:
-
 /* Create a new comment model using our Comment class,
  * passing the first message as an argument: */
 var comment = new Comment('This is a message');
-
 // Create a view, and associate it with this model:
 var commentView = new CommentView({ model: comment });
-
 /* Notice that we instantiate the view with an object {model: comment}.
  * This is called an options hash. With views, if we pass an object with
  * information that the view expects, we can modify things about the view.
@@ -135,18 +134,15 @@ var commentView = new CommentView({ model: comment });
  * NOTE: You can't just put any object in the options hash as the model,
  * it _must_ be a Backbone model.
  */
-
 // Append the view to the page. This is why we returned html from `render`:
-// $('body').append(commentView.render());
-
+$('body').append(commentView.render());
 /* The number of votes should be 0.
  * We set that as the initial default value in the comment model.
  *
  * Let's change it and see our eventlistener in action.
  * Uncomment the line below and reload the page,
  * and it should say '1' to the left of the comment. */
-// comment.upvote();
-
+comment.upvote();
 /* play with this in your console as well.
  * You can modify the comment object in the same way we just did:
  * ```
